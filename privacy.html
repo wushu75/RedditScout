@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Reddit Scout</title>
+<meta name="description" content="Reddit Scout privacy policy. We don't collect your data. Everything stays on your device.">
+<link rel="canonical" href="https://reddit-scout.com/privacy">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0e0e0f;
+  --bg2:      #141415;
+  --bg3:      #1c1c1e;
+  --surface:  #222224;
+  --border:   #2e2e31;
+  --border2:  #3a3a3e;
+  --orange:   #FF4500;
+  --orange2:  #ff6534;
+  --teal:     #0DD3BB;
+  --green:    #46D160;
+  --text:     #EAEAEA;
+  --text2:    #9a9a9e;
+  --text3:    #5a5a5f;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+  --r: 10px;
+  --r-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+a { color: var(--orange); text-decoration: none; }
+a:hover { text-decoration: underline; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* Nav */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(14,14,15,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-logo:hover { text-decoration: none; }
+.nav-logo span { color: var(--orange); }
+.nav-back {
+  font-size: 13px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+.nav-back:hover { color: var(--text); text-decoration: none; }
+
+/* Layout */
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+}
+
+/* Header */
+.page-header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.page-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--orange);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.page-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.page-meta {
+  font-size: 13px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+/* TL;DR box */
+.tldr {
+  background: rgba(70, 209, 96, 0.07);
+  border: 1px solid rgba(70, 209, 96, 0.2);
+  border-left: 3px solid var(--green);
+  border-radius: var(--r-sm);
+  padding: 18px 20px;
+  margin-bottom: 40px;
+}
+.tldr-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.tldr-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Sections */
+.policy-section {
+  margin-bottom: 40px;
+}
+.policy-h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.policy-h2 .sec-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 400;
+}
+.policy-p {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+.policy-p:last-child { margin-bottom: 0; }
+.policy-p strong { color: var(--text); font-weight: 600; }
+
+.policy-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+.policy-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.policy-list li::before {
+  content: '—';
+  color: var(--text3);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  margin-top: 1px;
+}
+
+.policy-list.check li::before {
+  content: '✓';
+  color: var(--green);
+  font-weight: 700;
+}
+
+.policy-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 40px 0;
+}
+
+/* Info card */
+.info-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  margin: 16px 0;
+}
+.info-card-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.info-card-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.info-card-row:last-child { border-bottom: none; padding-bottom: 0; }
+.info-card-key { color: var(--text2); font-family: var(--font-mono); font-size: 12px; }
+.info-card-val { color: var(--text); font-weight: 500; text-align: right; }
+.val-none { color: var(--green); font-family: var(--font-mono); font-size: 12px; }
+.val-local { color: var(--teal); font-family: var(--font-mono); font-size: 12px; }
+
+/* Contact */
+.contact-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px;
+  text-align: center;
+}
+.contact-card p {
+  font-size: 14px;
+  color: var(--text2);
+  margin-bottom: 12px;
+}
+.contact-email {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--orange);
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 24px;
+  background: var(--bg2);
+  margin-top: 60px;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.footer-logo span { color: var(--orange); }
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-size: 13px;
+  color: var(--text3);
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--text); text-decoration: none; }
+.footer-copy {
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="64" cy="64" r="60" fill="#1A1A1B"/>
+        <ellipse cx="64" cy="58" rx="38" ry="36" fill="#FF4500"/>
+        <circle cx="44" cy="28" r="8" fill="#FF4500"/><circle cx="84" cy="28" r="8" fill="#FF4500"/>
+        <circle cx="44" cy="24" r="5" fill="#FF6534"/><circle cx="84" cy="24" r="5" fill="#FF6534"/>
+        <ellipse cx="64" cy="62" rx="30" ry="28" fill="#FFFFFF"/>
+        <ellipse cx="52" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <ellipse cx="76" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <circle cx="52" cy="57" r="9" fill="#FF6B35"/>
+        <ellipse cx="49" cy="59" rx="3" ry="2.5" fill="#FFF0E0"/><ellipse cx="55" cy="59" rx="3" ry="2.5" fill="#FFF0E0"/>
+        <ellipse cx="52" cy="61" rx="1.5" ry="1" fill="#1A1A1B"/>
+        <circle cx="49.5" cy="55.5" r="1.5" fill="#1A1A1B"/><circle cx="54.5" cy="55.5" r="1.5" fill="#1A1A1B"/>
+        <circle cx="76" cy="56" r="9" fill="#0DD3BB"/>
+        <circle cx="76" cy="56" r="6" fill="#1A1A1B"/>
+        <line x1="76" y1="50" x2="76" y2="62" stroke="white" stroke-width="0.8" opacity="0.7"/>
+        <line x1="70" y1="56" x2="82" y2="56" stroke="white" stroke-width="0.8" opacity="0.7"/>
+        <circle cx="76" cy="56" r="1.5" fill="white" opacity="0.9"/>
+        <path d="M 52 76 Q 64 84 76 76" stroke="#FF4500" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      Reddit<span>Scout</span>
+    </a>
+    <a href="/" class="nav-back">← Back to home</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-label">Legal</div>
+    <h1 class="page-h1">Privacy Policy</h1>
+    <div class="page-meta">Last updated: 1 January 2026 · Effective immediately</div>
+  </div>
+
+  <div class="tldr">
+    <div class="tldr-label">TL;DR — The short version</div>
+    <div class="tldr-text">Reddit Scout collects <strong>nothing</strong>. All your keywords, leads, and settings live on <strong>your device only</strong> via Chrome's built-in storage. We have no servers, no database, no analytics, no tracking. We never see your data.</div>
+  </div>
+
+  <!-- 1 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">01</span> Who we are</h2>
+    <p class="policy-p">Reddit Scout is a Chrome browser extension built to help freelancers find and engage with potential clients on Reddit in a rule-safe way. This policy explains what data the extension handles and how.</p>
+    <p class="policy-p">For questions about this policy, contact us at <a href="mailto:hello@reddit-scout.com">hello@reddit-scout.com</a>.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 2 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">02</span> Data we collect — and don't</h2>
+
+    <div class="info-card">
+      <div class="info-card-label">Data inventory</div>
+      <div class="info-card-row">
+        <span class="info-card-key">Your name or email</span>
+        <span class="val-none">Not collected</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Browsing history</span>
+        <span class="val-none">Not collected</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Reddit credentials / login</span>
+        <span class="val-none">Not collected</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Analytics or usage tracking</span>
+        <span class="val-none">Not collected</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Crash reports or diagnostics</span>
+        <span class="val-none">Not collected</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Your saved leads</span>
+        <span class="val-local">Your device only (Chrome storage.sync)</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Your keywords</span>
+        <span class="val-local">Your device only (Chrome storage.sync)</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Your license key</span>
+        <span class="val-local">Your device only (Chrome storage.sync)</span>
+      </div>
+      <div class="info-card-row">
+        <span class="info-card-key">Your settings / preferences</span>
+        <span class="val-local">Your device only (Chrome storage.sync)</span>
+      </div>
+    </div>
+
+    <p class="policy-p"><strong>chrome.storage.sync</strong> is Chrome's own built-in storage layer. It syncs your data between your Chrome browsers if you're signed into Chrome — that sync happens between you and Google, not us. We never have access to it.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 3 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">03</span> How the extension works</h2>
+    <p class="policy-p">Reddit Scout operates entirely inside your browser. Here's exactly what it does when active:</p>
+    <ul class="policy-list check">
+      <li>Reads the visible HTML of the Reddit page you're currently viewing to find keyword matches</li>
+      <li>Stores matched leads, your keywords, and settings locally via Chrome's storage API</li>
+      <li>Generates reply template suggestions locally — no AI API calls, no external processing</li>
+      <li>Contacts Stripe's servers only when you initiate a payment (standard payment processor behaviour)</li>
+    </ul>
+    <p class="policy-p" style="margin-top:12px">It does <strong>not</strong> make any requests to Reddit's API. It does not send page content, post titles, or any other information to our servers — because we have no servers.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 4 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">04</span> Chrome permissions — explained plainly</h2>
+    <p class="policy-p">The extension requests the following Chrome permissions. Here's exactly why each one is needed:</p>
+    <ul class="policy-list">
+      <li><strong>storage</strong> — to save your keywords, leads, settings, and license key on your device</li>
+      <li><strong>alarms</strong> — to reset your daily free scan quota at midnight without needing you to open the extension</li>
+      <li><strong>sidePanel</strong> — to display the main Scout panel on the right side of your browser</li>
+      <li><strong>activeTab</strong> — to read the Reddit page you're currently viewing when you click Scan</li>
+      <li><strong>scripting</strong> — to inject the post-scanning code into the active Reddit tab</li>
+      <li><strong>Host: reddit.com</strong> — so the extension can run on Reddit pages only; it cannot run on any other website</li>
+    </ul>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 5 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">05</span> Payments</h2>
+    <p class="policy-p">Payment processing is handled by <strong>Stripe</strong>. When you purchase Reddit Scout Pro, your payment information (card details, billing email) is submitted directly to Stripe — it never passes through our systems.</p>
+    <p class="policy-p">We receive confirmation that a payment was successful, and your license key is generated locally in your browser from a hash of your email and Stripe's payment ID. We do not store your card details anywhere.</p>
+    <p class="policy-p">Stripe's privacy policy is available at <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a>.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 6 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">06</span> Email (optional)</h2>
+    <p class="policy-p">If you choose to enter your email address on our website to receive product updates, that email is stored only for the purpose of sending you those updates. We don't share it with third parties or use it for advertising. You can unsubscribe at any time by replying to any email we send.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 7 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">07</span> Third-party services</h2>
+    <p class="policy-p">This website (reddit-scout.com) uses Google Fonts for typography. Google Fonts may log your IP address when fonts are loaded — see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>. No other third-party scripts, analytics tools, or tracking pixels are used on this website.</p>
+    <p class="policy-p">The extension itself makes no requests to any third-party services except Stripe during the payment flow.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 8 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">08</span> Children's privacy</h2>
+    <p class="policy-p">Reddit Scout is intended for adults and freelance professionals. We do not knowingly collect any information from anyone under the age of 13. If you believe a child has provided information to us, please contact us and we will address it promptly.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 9 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">09</span> Your rights</h2>
+    <p class="policy-p">Because we don't collect personal data, there's very little for us to action. However:</p>
+    <ul class="policy-list check">
+      <li>You can delete all extension data at any time by uninstalling Reddit Scout from Chrome, or by going to chrome://extensions → Reddit Scout → Clear data</li>
+      <li>You can export your leads at any time via the CSV export (Pro) or by viewing them in the panel</li>
+      <li>If you've signed up for email updates, you can request deletion of your email by contacting us</li>
+    </ul>
+    <p class="policy-p" style="margin-top: 12px">If you're in the UK or EU, you have additional rights under GDPR / UK GDPR including the right to access, correct, or erase data we hold. Since we hold no personal data beyond optional email subscriptions, these rights primarily apply to those email records.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 10 -->
+  <div class="policy-section">
+    <h2 class="policy-h2"><span class="sec-num">10</span> Changes to this policy</h2>
+    <p class="policy-p">If we make material changes to this privacy policy, we will update the "Last updated" date at the top of this page. For significant changes, we'll also notify users who have opted into email updates. Continued use of the extension after changes are posted constitutes acceptance of the updated policy.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- Contact -->
+  <div class="contact-card">
+    <p>Questions about this policy? We're happy to help.</p>
+    <a href="mailto:hello@reddit-scout.com" class="contact-email">hello@reddit-scout.com</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <svg width="22" height="22" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="64" cy="64" r="60" fill="#1A1A1B"/>
+        <ellipse cx="64" cy="58" rx="38" ry="36" fill="#FF4500"/>
+        <ellipse cx="64" cy="62" rx="30" ry="28" fill="#FFFFFF"/>
+        <ellipse cx="52" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <ellipse cx="76" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <circle cx="52" cy="57" r="9" fill="#FF6B35"/>
+        <circle cx="76" cy="56" r="9" fill="#0DD3BB"/>
+        <circle cx="76" cy="56" r="6" fill="#1A1A1B"/>
+        <path d="M 52 76 Q 64 84 76 76" stroke="#FF4500" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      Reddit<span>Scout</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/#features">Features</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
+      <li><a href="/#faq">FAQ</a></li>
+      <li><a href="mailto:hello@reddit-scout.com">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-copy">
+      © 2026 Reddit Scout. Not affiliated with Reddit Inc. · Prospect Smart. Engage Real. Zero Bans.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

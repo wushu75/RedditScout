@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO -->
+<title>Reddit Scout: Find Clients on Reddit Safely (Chrome Extension)</title>
+<meta name="description" content="Auto-detect Reddit posts needing your services. Rule-safe engagement templates. Zero ban risk. $29 lifetime — no subscription.">
+<meta name="keywords" content="reddit leads, chrome extension clients, reddit prospecting, find clients reddit, reddit client finder, freelance leads reddit, reddit outreach tool">
+<link rel="canonical" href="https://reddit-scout.com">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://reddit-scout.com">
+<meta property="og:title" content="Reddit Scout — Find Clients on Reddit Without Getting Banned">
+<meta property="og:description" content="Auto-detect prospects. Rule-safe replies. Lead tracking. $29 lifetime Chrome extension.">
+<meta property="og:image" content="https://reddit-scout.com/og-image.png">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Reddit Scout — Find Clients on Reddit Without Getting Banned">
+<meta name="twitter:description" content="Auto-detect prospects. Rule-safe replies. $29 lifetime.">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Reddit Scout",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Chrome",
+  "offers": {
+    "@type": "Offer",
+    "price": "29",
+    "priceCurrency": "USD",
+    "priceValidUntil": "2026-12-31"
+  },
+  "description": "Chrome extension that auto-detects Reddit posts where people need your services, suggests rule-safe replies, and tracks leads."
+}
+</script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg:       #0e0e0f;
+  --bg2:      #141415;
+  --bg3:      #1c1c1e;
+  --surface:  #222224;
+  --border:   #2e2e31;
+  --border2:  #3a3a3e;
+  --orange:   #FF4500;
+  --orange2:  #ff6534;
+  --orange-glow: rgba(255,69,0,0.18);
+  --teal:     #0DD3BB;
+  --green:    #46D160;
+  --yellow:   #FFD635;
+  --text:     #EAEAEA;
+  --text2:    #9a9a9e;
+  --text3:    #5a5a5f;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+  --r: 10px;
+  --r-sm: 6px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ═══════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.container--narrow { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+/* ═══════════════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════════════ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--bg3);
+}
+.tag--orange { border-color: rgba(255,69,0,0.4); color: var(--orange2); background: rgba(255,69,0,0.07); }
+.tag--green { border-color: rgba(70,209,96,0.3); color: var(--green); background: rgba(70,209,96,0.06); }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+}
+
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+  padding: 0 24px;
+}
+nav.scrolled {
+  background: rgba(14,14,15,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom-color: var(--border);
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo-svg { width: 34px; height: 34px; }
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.nav-logo-text span { color: var(--orange); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  background: var(--orange);
+  color: white !important;
+  padding: 7px 16px;
+  border-radius: var(--r-sm);
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  transition: background 0.15s, transform 0.15s !important;
+}
+.nav-cta:hover { background: #e03c00 !important; transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Big angular background accent */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -300px;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(ellipse at center, rgba(255,69,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(13,211,187,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Grid lines decorative */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  gap: 60px;
+  align-items: center;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 62px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+.hero-h1 em {
+  font-style: normal;
+  color: var(--orange);
+  position: relative;
+}
+.hero-h1 em::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  right: 0;
+  height: 3px;
+  background: var(--orange);
+  opacity: 0.4;
+  border-radius: 2px;
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 32px;
+}
+
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+.hero-cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--orange);
+  color: white;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  padding: 16px 32px;
+  border-radius: var(--r-sm);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.btn-primary:hover { background: #e03c00; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,69,0,0.35); }
+.btn-primary:hover::after { transform: translateX(100%); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.btn-secondary:hover { color: var(--text); border-color: var(--text3); background: var(--bg3); }
+
+.hero-micro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+.hero-social-proof {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.proof-avatars {
+  display: flex;
+}
+.proof-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  margin-left: -8px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  overflow: hidden;
+}
+.proof-avatar:first-child { margin-left: 0; }
+.proof-text {
+  font-size: 13px;
+  color: var(--text2);
+}
+.proof-text strong { color: var(--text); }
+
+/* Hero right — browser mockup */
+.hero-visual {
+  position: relative;
+}
+
+.browser-mock {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.browser-bar {
+  background: var(--surface);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.browser-dots { display: flex; gap: 5px; }
+.browser-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.bd-red { background: #FF5F57; }
+.bd-yellow { background: #FEBC2E; }
+.bd-green { background: #28C840; }
+.browser-url {
+  flex: 1;
+  background: var(--bg3);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+}
+.browser-url span { color: var(--green); }
+
+.browser-content { padding: 16px; }
+
+/* Fake Reddit post cards inside mock */
+.mock-post {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  position: relative;
+  transition: border-color 0.3s;
+}
+.mock-post.detected {
+  border-color: rgba(255,69,0,0.5);
+  background: rgba(255,69,0,0.04);
+  animation: detect-pulse 3s ease-in-out infinite;
+}
+@keyframes detect-pulse {
+  0%, 100% { border-color: rgba(255,69,0,0.4); }
+  50% { border-color: rgba(255,69,0,0.8); box-shadow: 0 0 12px rgba(255,69,0,0.1); }
+}
+
+.mock-vote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 9px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+.mock-vote-arrow { font-size: 12px; color: var(--text3); }
+.mock-vote-arrow.up { color: var(--orange); }
+
+.mock-post-body { flex: 1; min-width: 0; }
+.mock-sub { font-size: 9px; color: var(--text3); font-family: var(--font-mono); margin-bottom: 3px; }
+.mock-title { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 5px; }
+.mock-meta { font-size: 9px; color: var(--text3); display: flex; gap: 8px; }
+
+.mock-scout-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--orange);
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  animation: badge-pop 0.3s ease;
+}
+@keyframes badge-pop {
+  0% { transform: scale(0); opacity: 0; }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Panel overlay on mock */
+.mock-panel {
+  margin-top: 10px;
+  background: #0e0e0f;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.mock-panel-header {
+  background: var(--surface);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.mock-panel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+.mock-panel-title { font-size: 9px; font-weight: 700; font-family: var(--font-mono); color: var(--text2); }
+.mock-lead-row {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.mock-lead-row:last-child { border-bottom: none; }
+.mock-lead-name { font-size: 9px; font-weight: 600; color: var(--text); }
+.mock-lead-sub { font-size: 8px; color: var(--text3); }
+.mock-lead-status {
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+.status-new { background: rgba(255,69,0,0.15); color: var(--orange2); }
+.status-safe { background: rgba(70,209,96,0.12); color: var(--green); }
+
+/* ═══════════════════════════════════════════════
+   LOGOS / TRUST BAR
+═══════════════════════════════════════════════ */
+.trust-bar {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+  background: var(--bg2);
+}
+.trust-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  font-weight: 500;
+}
+.trust-item span { color: var(--green); font-size: 14px; }
+
+/* ═══════════════════════════════════════════════
+   SECTION BASE
+═══════════════════════════════════════════════ */
+section { padding: 96px 0; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--orange);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.section-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 16px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ═══════════════════════════════════════════════
+   PROBLEM SECTION
+═══════════════════════════════════════════════ */
+.problem {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.problem-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+}
+
+.problem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--border2);
+}
+
+.problem-item.bad {
+  border-left-color: #FF585B;
+}
+
+.problem-item-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.problem-item-text { font-size: 14px; color: var(--text2); line-height: 1.5; }
+.problem-item-text strong { color: var(--text); display: block; font-weight: 600; margin-bottom: 2px; font-size: 13px; }
+
+.solution-card {
+  background: var(--bg3);
+  border: 1px solid rgba(255,69,0,0.2);
+  border-radius: var(--r);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.solution-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--orange), var(--orange2));
+}
+.solution-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--orange);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+.solution-steps { display: flex; flex-direction: column; gap: 14px; }
+.solution-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-text { font-size: 13px; color: var(--text2); line-height: 1.5; padding-top: 3px; }
+.step-text strong { color: var(--text); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════
+   FEATURES
+═══════════════════════════════════════════════ */
+.features-header { text-align: center; margin-bottom: 56px; }
+.features-header .section-sub { margin: 0 auto; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.feature-card {
+  background: var(--bg);
+  padding: 28px 24px;
+  position: relative;
+  transition: background 0.2s;
+}
+.feature-card:hover { background: var(--bg2); }
+.feature-card:hover .feature-icon { transform: scale(1.1) rotate(-5deg); }
+
+.feature-icon {
+  font-size: 28px;
+  margin-bottom: 14px;
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+.feature-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.feature-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.feature-tag {
+  margin-top: 12px;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(13,211,187,0.08);
+  border: 1px solid rgba(13,211,187,0.2);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════════════ */
+.how { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+  margin-top: 56px;
+}
+
+/* Connecting line */
+.how-steps::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: calc(12.5% + 20px);
+  right: calc(12.5% + 20px);
+  height: 1px;
+  background: linear-gradient(90deg, var(--orange), rgba(255,69,0,0.2));
+}
+
+.how-step {
+  padding: 0 20px;
+  position: relative;
+  text-align: center;
+}
+
+.how-num {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--orange);
+  background: var(--bg2);
+  color: var(--orange);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.how-step-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.how-step-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════
+   TESTIMONIALS
+═══════════════════════════════════════════════ */
+.testimonials-header { text-align: center; margin-bottom: 48px; }
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.testimonial-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.testimonial-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+
+.testimonial-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.testimonial-text {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.testimonial-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.testimonial-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.testimonial-handle {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+/* Reddit post embed */
+.reddit-embed {
+  max-width: 620px;
+  margin: 0 auto;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.reddit-embed-header {
+  background: var(--surface);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.reddit-snoo { font-size: 18px; }
+.reddit-sub-name { font-size: 12px; font-weight: 600; color: var(--orange); font-family: var(--font-mono); }
+.reddit-embed-body { padding: 16px; }
+.reddit-post-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+.reddit-post-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.reddit-post-meta {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+.reddit-upvotes { color: var(--orange); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════
+   PRICING
+═══════════════════════════════════════════════ */
+.pricing { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.pricing-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 820px;
+  margin: 56px auto 0;
+}
+
+.pricing-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-card.featured {
+  border-color: rgba(255,69,0,0.4);
+  background: var(--bg3);
+}
+.pricing-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange), var(--orange2));
+}
+
+.pricing-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: var(--orange);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 3px 9px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+
+.pricing-tier {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.pricing-price {
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.pricing-price sub {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text2);
+  letter-spacing: 0;
+  font-family: var(--font-body);
+  vertical-align: baseline;
+}
+
+.pricing-period {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 24px;
+  font-family: var(--font-mono);
+}
+
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.pricing-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.pf-check { color: var(--green); font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.pf-cross { color: var(--text3); font-size: 14px; flex-shrink: 0; }
+.pf-disabled { color: var(--text3); }
+
+.stripe-note {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════════ */
+.faq-list {
+  max-width: 680px;
+  margin: 48px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.faq-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+
+.faq-q {
+  padding: 18px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: background 0.15s;
+  user-select: none;
+}
+.faq-q:hover { background: var(--bg3); }
+
+.faq-arrow {
+  color: var(--text3);
+  transition: transform 0.25s;
+  flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1;
+}
+.faq-item.open .faq-arrow { transform: rotate(45deg); color: var(--orange); }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s;
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  padding: 0 20px;
+}
+.faq-item.open .faq-a { max-height: 300px; padding: 0 20px 18px; }
+
+/* ═══════════════════════════════════════════════
+   FINAL CTA
+═══════════════════════════════════════════════ */
+.final-cta {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(255,69,0,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.final-cta-inner { position: relative; z-index: 1; }
+
+.final-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.final-h2 span { color: var(--orange); }
+
+.final-sub {
+  font-size: 16px;
+  color: var(--text2);
+  margin-bottom: 36px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Email capture */
+.email-form {
+  display: flex;
+  gap: 10px;
+  max-width: 440px;
+  margin: 0 auto 40px;
+}
+.email-input {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  padding: 13px 16px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.email-input::placeholder { color: var(--text3); }
+.email-input:focus { border-color: var(--orange); }
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 36px 0;
+  background: var(--bg2);
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+.footer-logo span { color: var(--orange); }
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-size: 13px;
+  color: var(--text3);
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--text); }
+
+.footer-copy {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  width: 100%;
+  text-align: center;
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-stagger.visible > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0s; }
+.reveal-stagger.visible > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.08s; }
+.reveal-stagger.visible > *:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.16s; }
+.reveal-stagger.visible > *:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.24s; }
+.reveal-stagger.visible > *:nth-child(5) { opacity: 1; transform: none; transition-delay: 0.32s; }
+.reveal-stagger.visible > *:nth-child(6) { opacity: 1; transform: none; transition-delay: 0.40s; }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+  .hero-visual { order: -1; max-width: 480px; margin: 0 auto; }
+  .hero-h1 { font-size: 36px; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .how-steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .how-steps::before { display: none; }
+  .testimonials-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-inner { grid-template-columns: 1fr; max-width: 440px; }
+}
+
+@media (max-width: 600px) {
+  section { padding: 64px 0; }
+  .nav-links { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .email-form { flex-direction: column; }
+  .hero-social-proof { flex-direction: column; align-items: flex-start; }
+  .trust-inner { gap: 20px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────── -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg class="nav-logo-svg" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="64" cy="64" r="60" fill="#1A1A1B"/>
+        <ellipse cx="64" cy="58" rx="38" ry="36" fill="#FF4500"/>
+        <circle cx="44" cy="28" r="8" fill="#FF4500"/><circle cx="84" cy="28" r="8" fill="#FF4500"/>
+        <circle cx="44" cy="24" r="5" fill="#FF6534"/><circle cx="84" cy="24" r="5" fill="#FF6534"/>
+        <ellipse cx="64" cy="62" rx="30" ry="28" fill="#FFFFFF"/>
+        <ellipse cx="52" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <ellipse cx="76" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <circle cx="52" cy="57" r="9" fill="#FF6B35"/>
+        <ellipse cx="49" cy="59" rx="3" ry="2.5" fill="#FFF0E0"/><ellipse cx="55" cy="59" rx="3" ry="2.5" fill="#FFF0E0"/>
+        <ellipse cx="52" cy="61" rx="1.5" ry="1" fill="#1A1A1B"/>
+        <circle cx="49.5" cy="55.5" r="1.5" fill="#1A1A1B"/><circle cx="54.5" cy="55.5" r="1.5" fill="#1A1A1B"/>
+        <circle cx="50" cy="55" r="0.5" fill="white"/><circle cx="55" cy="55" r="0.5" fill="white"/>
+        <polygon points="48,49 51,55 45,55" fill="#FF6B35"/><polygon points="56,49 59,55 53,55" fill="#FF6B35"/>
+        <circle cx="76" cy="56" r="9" fill="#0DD3BB"/>
+        <circle cx="76" cy="56" r="6" fill="#1A1A1B"/>
+        <line x1="76" y1="50" x2="76" y2="62" stroke="white" stroke-width="0.8" opacity="0.7"/>
+        <line x1="70" y1="56" x2="82" y2="56" stroke="white" stroke-width="0.8" opacity="0.7"/>
+        <circle cx="76" cy="56" r="1.5" fill="white" opacity="0.9"/>
+        <path d="M 52 76 Q 64 84 76 76" stroke="#FF4500" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>Reddit<span>Scout</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#pricing" class="nav-cta">Get Pro — $29</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-pulse"></div>
+        <span class="tag tag--orange">Chrome Extension · Manifest V3</span>
+        <span class="tag tag--green">Zero ban risk</span>
+      </div>
+
+      <h1 class="hero-h1">
+        Find Clients on Reddit<br>
+        Without Getting <em>Banned</em>
+      </h1>
+
+      <p class="hero-sub">
+        <strong>5 years of manual hunting, wasted.</strong> Reddit Scout auto-detects "need designer / hiring dev" posts, suggests rule-safe replies, and tracks your leads — all inside Chrome.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#pricing" class="btn-primary" id="heroCta">
+          ⚡ Get Reddit Scout Pro — $29 Lifetime
+        </a>
+        <a href="#how" class="btn-secondary">
+          See how it works →
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Browser mock visual -->
+    <div class="hero-visual">
+      <div class="browser-mock">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot bd-red"></div>
+            <div class="browser-dot bd-yellow"></div>
+            <div class="browser-dot bd-green"></div>
+          </div>
+          <div class="browser-url">reddit.com/r/<span>forhire</span> · 🦊 Scout active</div>
+        </div>
+        <div class="browser-content">
+          <!-- Fake Reddit posts -->
+          <div class="mock-post">
+            <div class="mock-vote">
+              <span class="mock-vote-arrow">▲</span>
+              <span>124</span>
+              <span class="mock-vote-arrow">▼</span>
+            </div>
+            <div class="mock-post-body">
+              <div class="mock-sub">r/forhire · Posted by u/startup_sara</div>
+              <div class="mock-title">[Hiring] Looking for a React developer for a 3-month project — $80/hr, remote</div>
+              <div class="mock-meta"><span>💬 34 comments</span><span>🔗 Share</span></div>
+            </div>
+          </div>
+
+          <div class="mock-post detected">
+            <div class="mock-vote">
+              <span class="mock-vote-arrow up">▲</span>
+              <span style="color:var(--orange)">89</span>
+              <span class="mock-vote-arrow">▼</span>
+            </div>
+            <div class="mock-post-body">
+              <div class="mock-sub">r/entrepreneur · Posted by u/buildingmystore</div>
+              <div class="mock-title">Need a designer — anyone recommend someone who does Shopify storefronts? Budget ~$2k</div>
+              <div class="mock-meta"><span>💬 18 comments</span><span>🔗 Share</span></div>
+            </div>
+            <div class="mock-scout-badge">🦊 LEAD</div>
+          </div>
+
+          <div class="mock-post">
+            <div class="mock-vote">
+              <span class="mock-vote-arrow">▲</span>
+              <span>42</span>
+              <span class="mock-vote-arrow">▼</span>
+            </div>
+            <div class="mock-post-body">
+              <div class="mock-sub">r/smallbusiness · Posted by u/cafe_owner_uk</div>
+              <div class="mock-title">Who can help with SEO for a local cafe? Looking for freelancer, not an agency</div>
+              <div class="mock-meta"><span>💬 7 comments</span><span>🔗 Share</span></div>
+            </div>
+          </div>
+
+          <!-- Scout panel -->
+          <div class="mock-panel">
+            <div class="mock-panel-header">
+              <div class="mock-panel-dot"></div>
+              <span class="mock-panel-title">Reddit Scout — 2 leads found</span>
+            </div>
+            <div class="mock-lead-row">
+              <div>
+                <div class="mock-lead-name">Shopify designer needed</div>
+                <div class="mock-lead-sub">r/entrepreneur · u/buildingmystore</div>
+              </div>
+              <span class="mock-lead-status status-new">NEW</span>
+            </div>
+            <div class="mock-lead-row">
+              <div>
+                <div class="mock-lead-name">Local cafe SEO freelancer</div>
+                <div class="mock-lead-sub">r/smallbusiness · u/cafe_owner_uk</div>
+              </div>
+              <span class="mock-lead-status status-safe">✓ SAFE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── TRUST BAR ─────────────────────────────────────────── -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><span>✓</span> Chrome Web Store MV3</div>
+    <div class="trust-item"><span>✓</span> reddit.com + storage only</div>
+    <div class="trust-item"><span>✓</span> No external API calls</div>
+    <div class="trust-item"><span>✓</span> Stripe secured payment</div>
+    <div class="trust-item"><span>✓</span> Works on mobile Reddit</div>
+  </div>
+</div>
+
+<!-- ── PROBLEM ────────────────────────────────────────────── -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="reveal">
+        <div class="section-label">The Problem</div>
+        <h2 class="section-h2">Reddit clients exist.<br>Finding them safely doesn't.</h2>
+        <p class="section-sub" style="margin-bottom: 32px;">Every day, thousands of people post on Reddit begging for the exact service you offer. But manually hunting them gets you banned, shadowbanned, or burned out.</p>
+
+        <ul class="problem-list reveal-stagger">
+          <li class="problem-item bad">
+            <span class="problem-item-icon">⏱️</span>
+            <div class="problem-item-text">
+              <strong>5+ hours wasted per week</strong>
+              Manually scanning r/forhire, r/entrepreneur, r/freelance — most posts are months old or already filled.
+            </div>
+          </li>
+          <li class="problem-item bad">
+            <span class="problem-item-icon">🚫</span>
+            <div class="problem-item-text">
+              <strong>Bans happen fast</strong>
+              Drop a link in the wrong sub, DM without karma, post too commercially — instant permanent ban.
+            </div>
+          </li>
+          <li class="problem-item bad">
+            <span class="problem-item-icon">🤡</span>
+            <div class="problem-item-text">
+              <strong>Spammy templates get ignored</strong>
+              "Hi I can help with this!" comments get downvoted and flagged. Generic = invisible.
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="reveal">
+        <div class="solution-card">
+          <div class="solution-eyebrow">🦊 The Reddit Scout way</div>
+          <div class="solution-steps">
+            <div class="solution-step">
+              <div class="step-num">1</div>
+              <div class="step-text"><strong>Auto-detect matching posts</strong> — Scout scans the page for keyword matches in real time, no API needed.</div>
+            </div>
+            <div class="solution-step">
+              <div class="step-num">2</div>
+              <div class="step-text"><strong>Risk check first</strong> — Every post gets a risk score. High-risk subs flagged, ban-bait language caught before you reply.</div>
+            </div>
+            <div class="solution-step">
+              <div class="step-num">3</div>
+              <div class="step-text"><strong>Engage with genuine templates</strong> — Value-first, question-based replies that feel human. No links in first contact. Ever.</div>
+            </div>
+            <div class="solution-step">
+              <div class="step-num">4</div>
+              <div class="step-text"><strong>Track every lead</strong> — Save posts, update status (New → Contacted → Converted), export CSV when you're Pro.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ───────────────────────────────────────────── -->
+<section id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="section-label">Features</div>
+      <h2 class="section-h2">Everything you need.<br>Nothing you don't.</h2>
+      <p class="section-sub">Built by a UX pro who spent 5 years doing this manually. Every feature solves a real pain.</p>
+    </div>
+
+    <div class="features-grid reveal-stagger">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">Instant Post Detection</div>
+        <div class="feature-desc">Scans Reddit's DOM in real time. No API, no rate limits. Detects "need designer," "hiring dev," "looking for freelancer" and 30+ custom keywords.</div>
+        <div class="feature-tag">DOM scanner · zero latency</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">Ban Prevention Engine</div>
+        <div class="feature-desc">Every post gets a Safe / Caution / Risk score. Flags high-risk subreddits, promotional language, and first-reply link violations before you engage.</div>
+        <div class="feature-tag">Rule checker · risk scoring</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">Genuine Reply Templates</div>
+        <div class="feature-desc">4 engagement strategies per lead: Value-First, Question-Based, Soft Social Proof, Genuine Help. Personalised by risk level. Copy-paste in seconds.</div>
+        <div class="feature-tag">4 templates · 1-click copy</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <div class="feature-title">Lead CRM Built In</div>
+        <div class="feature-desc">Save leads with one click. Track status: New → Contacted → Converted → Dismissed. Search, filter, and manage your pipeline without leaving Chrome.</div>
+        <div class="feature-tag">Status tracking · search</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">CSV Export (Pro)</div>
+        <div class="feature-desc">Export your full lead list — title, author, subreddit, URL, status, risk score, date saved — straight to a spreadsheet. One click, watermark-free.</div>
+        <div class="feature-tag">Pro feature · instant export</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏷️</div>
+        <div class="feature-title">Custom Keywords</div>
+        <div class="feature-desc">Start with 30+ presets across design, dev, writing, marketing, and VA niches. Add your own. Synced across all Reddit tabs via Chrome sync storage.</div>
+        <div class="feature-tag">30+ presets · fully custom</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ───────────────────────────────────────── -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label">How it works</div>
+      <h2 class="section-h2">From install to first lead<br>in under 3 minutes</h2>
+    </div>
+
+    <div class="how-steps reveal-stagger">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <div class="how-step-title">Install & Pin</div>
+        <div class="how-step-desc">One-click Chrome install from the Web Store. Pin the fox icon to your toolbar.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <div class="how-step-title">Set Keywords</div>
+        <div class="how-step-desc">Pick from 30+ presets or add your own niche terms. Saved instantly via Chrome sync.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <div class="how-step-title">Scan Any Sub</div>
+        <div class="how-step-desc">Browse Reddit normally. Hit Scan — matched posts are highlighted and scored in 1 second.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">04</div>
+        <div class="how-step-title">Engage & Track</div>
+        <div class="how-step-desc">Copy a safe template, reply genuinely, save the lead, and update its status as you follow up.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── PRICING ─────────────────────────────────────────────── -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-h2">One price. Forever yours.</h2>
+      <p class="section-sub" style="margin: 0 auto;">No monthly fees. No seat limits. Pay once, prospect forever.</p>
+    </div>
+
+    <div class="pricing-inner reveal-stagger">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Free Forever</div>
+        <div class="pricing-price">$0</div>
+        <div class="pricing-period">No credit card required</div>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="pf-check">✓</span> 10 scans per day</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> Keyword detection</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> Risk scoring</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> 3 reply templates</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> Save up to 50 leads</li>
+          <li class="pricing-feature pf-disabled"><span class="pf-cross">✕</span> CSV export</li>
+          <li class="pricing-feature pf-disabled"><span class="pf-cross">✕</span> Unlimited scans</li>
+          <li class="pricing-feature pf-disabled"><span class="pf-cross">✕</span> Unlimited lead storage</li>
+        </ul>
+        <a href="https://chromewebstore.google.com" class="btn-secondary" style="width:100%;padding:13px">
+          Install Free →
+        </a>
+      </div>
+
+      <!-- Pro -->
+      <div class="pricing-card featured">
+        <div class="pricing-badge">BEST VALUE</div>
+        <div class="pricing-tier">Pro — Lifetime</div>
+        <div class="pricing-price">$29 <sub>one-time</sub></div>
+        <div class="pricing-period">No subscription. Ever.</div>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="pf-check">✓</span> <strong>Unlimited scans</strong></li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> Keyword detection</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> Risk scoring + ban prevention</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> 4 pro reply templates</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> <strong>Unlimited lead storage</strong></li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> <strong>CSV export</strong></li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> Priority support</li>
+          <li class="pricing-feature"><span class="pf-check">✓</span> All future updates</li>
+        </ul>
+        <button class="btn-primary" id="pricingCta" style="width:100%;padding:14px;font-size:16px" onclick="handleCheckout()">
+          ⚡ Unlock Pro — $29 Lifetime
+        </button>
+        <div class="stripe-note">
+          🔒 Secured by Stripe · Instant license delivery
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--text3);font-family:var(--font-mono)">
+      Like Readr but for client hunting. Chrome Web Store approved. ✓
+    </p>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────── -->
+<section id="faq">
+  <div class="container--narrow">
+    <div class="reveal" style="text-align:center;margin-bottom:0">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-h2">Common questions</h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q">Will this get me banned from Reddit? <span class="faq-arrow">+</span></div>
+        <div class="faq-a">Reddit Scout is designed around ban prevention, not around it. It only scans — it never auto-posts, never DMs on your behalf, and never touches Reddit's API. Every reply suggestion includes tips that follow Reddit's rules: value-first, no links in first contact, no copy-paste spam. The risk scoring system flags high-risk subs before you engage.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does it need Reddit API access? <span class="faq-arrow">+</span></div>
+        <div class="faq-a">No. Reddit Scout reads the page's DOM directly — the same way you see the posts in your browser. It never makes API calls to Reddit, has no OAuth login, and holds no Reddit credentials. This is also why it has minimal permissions in the Chrome Store.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What permissions does it need? <span class="faq-arrow">+</span></div>
+        <div class="faq-a">Only 5: storage (to save your leads and keywords), alarms (to reset your daily quota at midnight), sidePanel (for the main UI), activeTab (to scan the current Reddit tab), and scripting (to inject the scanner). Host permissions: reddit.com only. No "read your browsing history," no broad host access.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is the $29 really one-time? No subscription? <span class="faq-arrow">+</span></div>
+        <div class="faq-a">Yes. $29, once, forever. You get a license key that activates unlimited scans in the extension itself — no server to go down, no recurring billing, no price increases for existing customers. The free tier (10 scans/day) never expires either.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Which subreddits does it work on? <span class="faq-arrow">+</span></div>
+        <div class="faq-a">Any subreddit feed page on reddit.com or old.reddit.com. Popular hunting grounds include r/forhire, r/entrepreneur, r/smallbusiness, r/webdev, r/freelance, r/startups, and niche subs for your specific skill. The extension works on both new Reddit (shreddit) and old Reddit layouts.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What if it doesn't work for me? <span class="faq-arrow">+</span></div>
+        <div class="faq-a">Email us at hello@reddit-scout.com within 30 days for a full refund, no questions asked. If Reddit changes their DOM structure and breaks the scanner, we'll push an update — you get all updates included in the one-time purchase.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ───────────────────────────────────────────── -->
+<section class="final-cta" style="background:var(--bg2);border-top:1px solid var(--border)">
+  <div class="container--narrow">
+    <div class="final-cta-inner reveal">
+      <div class="section-label" style="text-align:center">Start today</div>
+      <h2 class="final-h2">Stop scrolling Reddit.<br>Start <span>closing clients.</span></h2>
+      <p class="final-sub">Start your free trial today. 10 scans a day, no credit card needed — upgrade to Pro when you're ready.</p>
+
+      <a href="#pricing" class="btn-primary" style="font-size:18px;padding:18px 40px;margin:0 auto 20px;display:inline-flex">
+        ⚡ Get Reddit Scout Pro — $29
+      </a>
+
+      <div style="margin-bottom:32px;font-size:13px;color:var(--text3);font-family:var(--font-mono)">
+        or get notified when new features ship ↓
+      </div>
+
+      <!-- Email capture -->
+      <form class="email-form" onsubmit="handleEmailSubmit(event)">
+        <input type="email" class="email-input" placeholder="your@email.com" required>
+        <button type="submit" class="btn-secondary">Notify me →</button>
+      </form>
+
+      <div id="emailSuccess" style="display:none;font-size:13px;color:var(--green);margin-top:10px;font-family:var(--font-mono)">
+        ✓ You're on the list. We'll email when new features ship.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <svg width="26" height="26" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="64" cy="64" r="60" fill="#1A1A1B"/>
+        <ellipse cx="64" cy="58" rx="38" ry="36" fill="#FF4500"/>
+        <circle cx="44" cy="28" r="8" fill="#FF4500"/><circle cx="84" cy="28" r="8" fill="#FF4500"/>
+        <ellipse cx="64" cy="62" rx="30" ry="28" fill="#FFFFFF"/>
+        <ellipse cx="52" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <ellipse cx="76" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <circle cx="52" cy="57" r="9" fill="#FF6B35"/>
+        <circle cx="76" cy="56" r="9" fill="#0DD3BB"/>
+        <circle cx="76" cy="56" r="6" fill="#1A1A1B"/>
+        <path d="M 52 76 Q 64 84 76 76" stroke="#FF4500" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      Reddit<span>Scout</span>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="https://chromewebstore.google.com" target="_blank">Chrome Store</a></li>
+      <li><a href="mailto:hello@reddit-scout.com">hello@reddit-scout.com</a></li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="footer-copy">
+      © 2026 Reddit Scout. Not affiliated with Reddit Inc. · Prospect Smart. Engage Real. Zero Bans.
+    </div>
+  </div>
+</footer>
+
+<!-- ── JS ─────────────────────────────────────────────────── -->
+<script>
+// ── Nav scroll ──────────────────────────────────────────────
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// ── Reveal on scroll ─────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ── FAQ accordion ─────────────────────────────────────────────
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// ── Mock animation — cycle detected post ──────────────────────
+const mockPosts = document.querySelectorAll('.mock-post');
+let detectedIdx = 1;
+setInterval(() => {
+  mockPosts.forEach(p => { p.classList.remove('detected'); p.querySelector('.mock-scout-badge')?.remove(); });
+  const next = mockPosts[detectedIdx % mockPosts.length];
+  next.classList.add('detected');
+  if (!next.querySelector('.mock-scout-badge')) {
+    const badge = document.createElement('div');
+    badge.className = 'mock-scout-badge';
+    badge.textContent = '🦊 LEAD';
+    next.appendChild(badge);
+  }
+  detectedIdx++;
+}, 3500);
+
+// ── Stripe checkout ───────────────────────────────────────────
+function handleCheckout() {
+  // Replace with your Stripe Payment Link or Checkout Session URL
+  // Option A — Stripe Payment Link (no backend needed):
+  // window.location.href = 'https://buy.stripe.com/YOUR_PAYMENT_LINK';
+
+  // Option B — Stripe Checkout (requires backend):
+  // fetch('/create-checkout-session', { method: 'POST' })
+  //   .then(r => r.json())
+  //   .then(d => window.location.href = d.url);
+
+  // Demo mode — shows alert with instructions
+  const btn = document.getElementById('pricingCta');
+  btn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px"></span> Redirecting to Stripe...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    // In production, replace this with your actual Stripe Payment Link:
+    // window.location.href = 'https://buy.stripe.com/YOUR_LINK';
+    alert('🦊 Demo mode!\n\nTo enable real payments:\n1. Create a Stripe Payment Link at stripe.com\n2. Replace the URL in handleCheckout() in index.html\n\nYour link will look like: https://buy.stripe.com/xxxxx\n\nAfter payment, redirect to your upgrade.html with the license key.');
+    btn.innerHTML = '⚡ Unlock Pro — $29 Lifetime';
+    btn.disabled = false;
+  }, 1400);
+}
+
+// ── Email capture ─────────────────────────────────────────────
+function handleEmailSubmit(e) {
+  e.preventDefault();
+  const email = e.target.querySelector('input').value;
+
+  // In production: POST to your email service (Mailchimp, ConvertKit, etc.)
+  // fetch('/subscribe', { method: 'POST', body: JSON.stringify({ email }) })
+
+  e.target.style.display = 'none';
+  document.getElementById('emailSuccess').style.display = 'block';
+
+  // Store locally as fallback
+  try { localStorage.setItem('rs_email_captured', email); } catch {}
+}
+
+// Spin keyframe for loading state
+const styleEl = document.createElement('style');
+styleEl.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(styleEl);
+
+// ── Smooth scroll for nav links ───────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) {
+      e.preventDefault();
+      const top = el.getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
