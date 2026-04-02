@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activate Reddit Scout Pro</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0e0e0f;
+  --bg2:     #141415;
+  --bg3:     #1c1c1e;
+  --surface: #222224;
+  --border:  #2e2e31;
+  --orange:  #FF4500;
+  --orange2: #ff6534;
+  --green:   #46D160;
+  --teal:    #0DD3BB;
+  --yellow:  #FFD635;
+  --text:    #EAEAEA;
+  --text2:   #9a9a9e;
+  --text3:   #5a5a5f;
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+  --font-body:    'DM Sans', sans-serif;
+  --r: 10px;
+  --r-sm: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+/* Glow */
+body::after {
+  content: '';
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(70,209,96,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+}
+
+/* Top accent bar */
+.card::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+}
+
+.card-body {
+  padding: 36px 40px 40px;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.logo-text span { color: var(--orange); }
+
+/* States */
+.state { display: none; }
+.state.active { display: block; }
+
+/* Loading state */
+.loading-state {
+  text-align: center;
+  padding: 20px 0;
+}
+.spinner-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.big-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(70,209,96,0.2);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.loading-sub { font-size: 14px; color: var(--text2); }
+
+/* Success state */
+.success-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.success-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.success-sub {
+  font-size: 14px;
+  color: var(--text2);
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* Key box */
+.key-section { margin-bottom: 24px; }
+.key-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.key-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+}
+.key-value {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--teal);
+  word-break: break-all;
+  line-height: 1.5;
+}
+.key-copy-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text2);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.key-copy-btn:hover { color: var(--text); border-color: var(--text3); }
+.key-copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+/* CTA button */
+.activate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--orange);
+  color: white;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 15px 24px;
+  border-radius: var(--r-sm);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.activate-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.activate-btn:hover { background: #e03c00; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,69,0,0.3); }
+.activate-btn:hover::after { transform: translateX(100%); }
+
+.manual-note {
+  font-size: 12px;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.6;
+}
+.manual-note strong { color: var(--text2); }
+
+/* Divider */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text3);
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+.or-divider::before, .or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Manual entry */
+.manual-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.manual-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.manual-input::placeholder { color: var(--text3); }
+.manual-input:focus { border-color: var(--orange); }
+
+.manual-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.manual-btn:hover { background: var(--bg3); border-color: var(--border2); }
+
+/* Already installed check */
+.install-check {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: rgba(255, 214, 53, 0.07);
+  border: 1px solid rgba(255, 214, 53, 0.2);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  color: var(--yellow);
+  line-height: 1.6;
+  display: none;
+}
+.install-check.show { display: block; }
+.install-check a { color: var(--orange); }
+
+/* Error state */
+.error-state { text-align: center; }
+.error-icon { font-size: 40px; margin-bottom: 16px; }
+.error-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.error-msg { font-size: 14px; color: var(--text2); margin-bottom: 24px; line-height: 1.6; }
+
+/* Activated state */
+.activated-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--orange), var(--orange2));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 20px;
+  animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Footer note */
+.card-footer {
+  border-top: 1px solid var(--border);
+  padding: 14px 40px;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.footer-note { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+.footer-link { font-size: 11px; color: var(--text3); text-decoration: none; transition: color 0.15s; }
+.footer-link:hover { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-body">
+
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="64" cy="64" r="60" fill="#1A1A1B"/>
+        <ellipse cx="64" cy="58" rx="38" ry="36" fill="#FF4500"/>
+        <circle cx="44" cy="28" r="8" fill="#FF4500"/><circle cx="84" cy="28" r="8" fill="#FF4500"/>
+        <circle cx="44" cy="24" r="5" fill="#FF6534"/><circle cx="84" cy="24" r="5" fill="#FF6534"/>
+        <ellipse cx="64" cy="62" rx="30" ry="28" fill="#FFFFFF"/>
+        <ellipse cx="52" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <ellipse cx="76" cy="56" rx="12" ry="12" fill="#1A1A1B"/>
+        <circle cx="52" cy="57" r="9" fill="#FF6B35"/>
+        <ellipse cx="49" cy="59" rx="3" ry="2.5" fill="#FFF0E0"/>
+        <ellipse cx="55" cy="59" rx="3" ry="2.5" fill="#FFF0E0"/>
+        <ellipse cx="52" cy="61" rx="1.5" ry="1" fill="#1A1A1B"/>
+        <circle cx="49.5" cy="55.5" r="1.5" fill="#1A1A1B"/>
+        <circle cx="54.5" cy="55.5" r="1.5" fill="#1A1A1B"/>
+        <circle cx="76" cy="56" r="9" fill="#0DD3BB"/>
+        <circle cx="76" cy="56" r="6" fill="#1A1A1B"/>
+        <line x1="76" y1="50" x2="76" y2="62" stroke="white" stroke-width="0.8" opacity="0.7"/>
+        <line x1="70" y1="56" x2="82" y2="56" stroke="white" stroke-width="0.8" opacity="0.7"/>
+        <circle cx="76" cy="56" r="1.5" fill="white" opacity="0.9"/>
+        <path d="M 52 76 Q 64 84 76 76" stroke="#FF4500" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-text">Reddit<span>Scout</span></span>
+    </div>
+
+    <!-- LOADING -->
+    <div class="state active loading-state" id="stateLoading">
+      <div class="spinner-wrap">
+        <div class="big-spinner"></div>
+      </div>
+      <div class="loading-title">Preparing your license...</div>
+      <div class="loading-sub">Just a moment</div>
+    </div>
+
+    <!-- SUCCESS — ready to activate -->
+    <div class="state" id="stateSuccess">
+      <div class="success-icon-wrap">
+        <div class="success-icon">⚡</div>
+      </div>
+      <div class="success-title">Payment confirmed!</div>
+      <p class="success-sub">Your Reddit Scout Pro license is ready. Click below to activate it inside Chrome automatically.</p>
+
+      <div class="key-section">
+        <div class="key-label">Your license key</div>
+        <div class="key-box">
+          <div class="key-value" id="displayKey">rs_generating...</div>
+          <button class="key-copy-btn" id="copyKeyBtn">Copy</button>
+        </div>
+      </div>
+
+      <a href="#" class="activate-btn" id="activateDeepLink">
+        🦊 Activate Reddit Scout Pro
+      </a>
+
+      <div class="install-check" id="installCheck">
+        ⚠️ Don't have Reddit Scout installed yet? <a href="https://chromewebstore.google.com/detail/reddit-scout/dpfooobmgaejbfkclakbldlmhmmcgbpp" target="_blank">Install it first</a>, then click Activate again. Your license key is saved above.
+      </div>
+
+      <div class="or-divider">or enter key manually</div>
+
+      <div class="manual-form">
+        <input class="manual-input" id="manualKeyInput" placeholder="rs_xxxxxxxxxxxxxxxxxxxxxxxx" value="">
+        <button class="manual-btn" id="manualActivateBtn">Activate manually in extension</button>
+      </div>
+    </div>
+
+    <!-- ACTIVATED -->
+    <div class="state" id="stateActivated">
+      <div class="activated-icon">🦊</div>
+      <div class="success-title" style="text-align:center">You're Pro!</div>
+      <p class="success-sub">Reddit Scout Pro is now active. Head back to Reddit and start scouting.</p>
+      <a href="https://www.reddit.com" class="activate-btn">Go to Reddit →</a>
+      <p class="manual-note">You can also close this tab. Your Pro license is saved in the extension.</p>
+    </div>
+
+    <!-- ERROR -->
+    <div class="state" id="stateError">
+      <div class="error-state">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Something went wrong</div>
+        <div class="error-msg" id="errorMsg">We couldn't verify your payment. Please contact us and we'll sort it out.</div>
+        <a href="mailto:hello@reddit-scout.com" class="activate-btn">Contact Support</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-note">🔒 Payment secured by Stripe</span>
+    <a href="mailto:hello@reddit-scout.com" class="footer-link">hello@reddit-scout.com</a>
+    <a href="https://wushu75.github.io/RedditScout/privacy.html" class="footer-link">Privacy</a>
+  </div>
+</div>
+
+<script>
+const EXTENSION_ID = 'dpfooobmgaejbfkclakbldlmhmmcgbpp';
+
+// ── State helpers ─────────────────────────────────────────────────
+function showState(id) {
+  document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── Generate license key from session ID ──────────────────────────
+async function generateKey(sessionId) {
+  const data = `${sessionId}:reddit-scout-v1:${EXTENSION_ID}`;
+  const encoded = new TextEncoder().encode(data);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', encoded);
+  const hex = Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0')).join('');
+  return `rs_${hex.slice(0, 40)}`;
+}
+
+// ── Main ──────────────────────────────────────────────────────────
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id') || params.get('payment_intent') || params.get('key');
+
+  // No session ID — likely direct navigation
+  if (!sessionId) {
+    showState('stateError');
+    document.getElementById('errorMsg').textContent =
+      'No payment session found. If you just paid, please check your email for a receipt or contact us.';
+    return;
+  }
+
+  // If a full key was passed directly (from deep link or email)
+  const licenseKey = sessionId.startsWith('rs_')
+    ? sessionId
+    : await generateKey(sessionId);
+
+  // Show success UI
+  showState('stateSuccess');
+  document.getElementById('displayKey').textContent = licenseKey;
+  document.getElementById('manualKeyInput').value = licenseKey;
+
+  // Deep link to extension
+  const deepLink = `chrome-extension://${EXTENSION_ID}/upgrade.html?key=${encodeURIComponent(licenseKey)}`;
+  document.getElementById('activateDeepLink').href = deepLink;
+
+  // Click → try to detect if it worked
+  document.getElementById('activateDeepLink').addEventListener('click', (e) => {
+    // After a short delay, show "activated" or hint to install
+    setTimeout(() => {
+      // Check if extension tab opened (we can't actually confirm, so prompt)
+      const confirmed = confirm(
+        'Did Reddit Scout Pro activate successfully?\n\nIf you saw a success screen in the extension, click OK.\nIf nothing happened, click Cancel — we\'ll help you activate manually.'
+      );
+      if (confirmed) {
+        showState('stateActivated');
+      } else {
+        document.getElementById('installCheck').classList.add('show');
+      }
+    }, 2000);
+  });
+
+  // Copy key button
+  document.getElementById('copyKeyBtn').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(licenseKey);
+      const btn = document.getElementById('copyKeyBtn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    } catch {}
+  });
+
+  // Manual activation — open extension upgrade page with key
+  document.getElementById('manualActivateBtn').addEventListener('click', () => {
+    const key = document.getElementById('manualKeyInput').value.trim();
+    if (!key.startsWith('rs_')) return;
+    window.open(`chrome-extension://${EXTENSION_ID}/upgrade.html?key=${encodeURIComponent(key)}`);
+    setTimeout(() => {
+      const confirmed = confirm('Did the activation succeed?');
+      if (confirmed) showState('stateActivated');
+    }, 2000);
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>
