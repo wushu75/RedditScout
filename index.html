@@ -1315,7 +1315,7 @@ footer {
       <li><a href="#how">How it works</a></li>
       <li><a href="#pricing">Pricing</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li><a href="#pricing" class="nav-cta">Get Pro — $29</a></li>
+      <li><a href="https://buy.stripe.com/4gM7sMaZs1lwc0L0Og1B609" class="nav-cta">Get Pro — $29</a></li>
     </ul>
   </div>
 </nav>
@@ -1695,7 +1695,7 @@ footer {
       <h2 class="final-h2">Stop scrolling Reddit.<br>Start <span>closing clients.</span></h2>
       <p class="final-sub">Start your free trial today. 10 scans a day, no credit card needed — upgrade to Pro when you're ready.</p>
 
-      <a href="#pricing" class="btn-primary" style="font-size:18px;padding:18px 40px;margin:0 auto 20px;display:inline-flex">
+      <a href="https://buy.stripe.com/4gM7sMaZs1lwc0L0Og1B609" class="btn-primary" style="font-size:18px;padding:18px 40px;margin:0 auto 20px;display:inline-flex">
         ⚡ Get Reddit Scout Pro — $29
       </a>
 
@@ -1800,27 +1800,7 @@ setInterval(() => {
 
 // ── Stripe checkout ───────────────────────────────────────────
 function handleCheckout() {
-  // Replace with your Stripe Payment Link or Checkout Session URL
-  // Option A — Stripe Payment Link (no backend needed):
-  // window.location.href = 'https://buy.stripe.com/YOUR_PAYMENT_LINK';
-
-  // Option B — Stripe Checkout (requires backend):
-  // fetch('/create-checkout-session', { method: 'POST' })
-  //   .then(r => r.json())
-  //   .then(d => window.location.href = d.url);
-
-  // Demo mode — shows alert with instructions
-  const btn = document.getElementById('pricingCta');
-  btn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px"></span> Redirecting to Stripe...';
-  btn.disabled = true;
-
-  setTimeout(() => {
-    // In production, replace this with your actual Stripe Payment Link:
-    // window.location.href = 'https://buy.stripe.com/YOUR_LINK';
-    alert('🦊 Demo mode!\n\nTo enable real payments:\n1. Create a Stripe Payment Link at stripe.com\n2. Replace the URL in handleCheckout() in index.html\n\nYour link will look like: https://buy.stripe.com/xxxxx\n\nAfter payment, redirect to your upgrade.html with the license key.');
-    btn.innerHTML = '⚡ Unlock Pro — $29 Lifetime';
-    btn.disabled = false;
-  }, 1400);
+  window.location.href = 'https://buy.stripe.com/4gM7sMaZs1lwc0L0Og1B609';
 }
 
 // ── Email capture ─────────────────────────────────────────────

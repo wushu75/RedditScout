@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upgrade to Reddit Scout Pro</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    .up-header {
+      background: linear-gradient(135deg, #1A1A1B 0%, #272729 100%);
+      border-bottom: 1px solid var(--rs-border);
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    .up-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .up-logo img { width: 36px; height: 36px; }
+
+    .up-logo h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--rs-text);
+    }
+    .up-logo h1 span { color: var(--rs-orange); }
+
+    .up-tagline {
+      font-size: 12px;
+      color: var(--rs-text-dim);
+    }
+
+    .up-body {
+      flex: 1;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .up-hero {
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .up-hero-price {
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--rs-orange);
+      font-family: var(--rs-font);
+      line-height: 1;
+    }
+
+    .up-hero-price sub {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--rs-text-dim);
+      font-family: var(--rs-font-ui);
+      vertical-align: baseline;
+    }
+
+    .up-hero-desc {
+      font-size: 13px;
+      color: var(--rs-text-dim);
+      margin-top: 6px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .feature-item {
+      background: var(--rs-surface);
+      border: 1px solid var(--rs-border);
+      border-radius: var(--rs-radius);
+      padding: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .feature-icon { font-size: 18px; flex-shrink: 0; }
+
+    .feature-info {}
+    .feature-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--rs-text);
+      margin-bottom: 2px;
+    }
+    .feature-desc { font-size: 10px; color: var(--rs-text-dim); line-height: 1.4; }
+
+    .payment-section {
+      background: var(--rs-surface);
+      border: 1px solid var(--rs-border);
+      border-radius: var(--rs-radius);
+      padding: 16px;
+    }
+
+    .payment-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--rs-text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--rs-text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    #card-element {
+      background: var(--rs-bg);
+      border: 1px solid var(--rs-border);
+      border-radius: var(--rs-radius-sm);
+      padding: 10px;
+      transition: border-color 0.15s;
+    }
+
+    #card-element.focused { border-color: var(--rs-orange); }
+
+    #card-errors {
+      font-size: 11px;
+      color: var(--rs-red);
+      min-height: 16px;
+    }
+
+    .pay-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 13px;
+      font-size: 14px;
+      border-radius: var(--rs-radius);
+      margin-top: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pay-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .pay-btn:not(:disabled):hover::before {
+      transform: translateX(100%);
+    }
+
+    .security-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--rs-text-faint);
+      margin-top: 4px;
+    }
+
+    /* Success state */
+    .success-view {
+      display: none;
+      text-align: center;
+      padding: 24px;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .success-view.show { display: flex; }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--rs-orange), #FF6534);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      animation: rs-fadeIn 0.4s ease;
+    }
+
+    .success-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--rs-text);
+    }
+
+    .license-display {
+      background: var(--rs-surface);
+      border: 1px solid var(--rs-border);
+      border-radius: var(--rs-radius);
+      padding: 12px 16px;
+      font-family: var(--rs-font);
+      font-size: 12px;
+      color: var(--rs-teal);
+      word-break: break-all;
+      width: 100%;
+      text-align: left;
+    }
+
+    /* License key tab */
+    .tab-switcher {
+      display: flex;
+      gap: 4px;
+      background: var(--rs-bg);
+      padding: 3px;
+      border-radius: var(--rs-radius);
+      border: 1px solid var(--rs-border);
+    }
+
+    .tab-sw-btn {
+      flex: 1;
+      padding: 6px;
+      background: transparent;
+      border: none;
+      border-radius: var(--rs-radius-sm);
+      color: var(--rs-text-dim);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .tab-sw-btn.active {
+      background: var(--rs-surface);
+      color: var(--rs-text);
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="up-header">
+    <div class="up-logo">
+      <img src="icons/icon48.png" alt="">
+      <h1>Reddit<span>Scout</span></h1>
+    </div>
+    <p class="up-tagline">Prospect Smart. Engage Real. Zero Bans.</p>
+  </div>
+
+  <div class="up-body" id="mainView">
+    <div class="up-hero">
+      <div class="up-hero-price">$29 <sub>one-time</sub></div>
+      <div class="up-hero-desc">No subscriptions. No recurring fees. Yours forever.</div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">♾️</div>
+        <div class="feature-info">
+          <div class="feature-name">Unlimited Scans</div>
+          <div class="feature-desc">Scan as much as you want, every day</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div class="feature-info">
+          <div class="feature-name">CSV Export</div>
+          <div class="feature-desc">Export all leads to spreadsheet</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💬</div>
+        <div class="feature-info">
+          <div class="feature-name">Pro Templates</div>
+          <div class="feature-desc">4 rule-safe reply templates per lead</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-info">
+          <div class="feature-name">Ban Prevention</div>
+          <div class="feature-desc">Risk scoring for every post</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab switcher: Pay vs Enter Key -->
+    <div class="tab-switcher">
+      <button class="tab-sw-btn active" data-pane="payment">💳 Pay $29</button>
+      <button class="tab-sw-btn" data-pane="license">🔑 Enter License Key</button>
+    </div>
+
+    <!-- Payment pane -->
+    <div class="tab-pane active" id="pane-payment">
+      <div class="payment-section">
+        <div class="payment-title">🔒 Secure Payment via Stripe</div>
+        <p style="font-size:12px;color:var(--rs-text-dim);margin-bottom:16px;line-height:1.6">
+          You'll be taken to Stripe's secure checkout page. After payment, you'll be redirected back here and your Pro license will activate automatically.
+        </p>
+
+        <button class="rs-btn rs-btn-primary pay-btn" id="payBtn">
+          ⚡ Unlock Reddit Scout Pro — $29
+        </button>
+
+        <div class="security-note">
+          🔒 Powered by Stripe · 256-bit SSL · Instant activation
+        </div>
+      </div>
+    </div>
+
+    <!-- License key pane -->
+    <div class="tab-pane" id="pane-license">
+      <div class="payment-section">
+        <div class="payment-title">🔑 Enter Your License Key</div>
+        <div class="form-field" style="margin-bottom:10px">
+          <label class="form-label">License Key</label>
+          <input type="text" class="rs-input" id="licenseInput" placeholder="rs_xxxxxxxxxxxxxxxxxxxxxxxx" style="font-family:var(--rs-font)">
+        </div>
+        <button class="rs-btn rs-btn-primary" id="activateLicenseBtn" style="width:100%;justify-content:center;padding:11px">
+          Activate License
+        </button>
+        <div id="licenseError" style="font-size:11px;color:var(--rs-red);margin-top:6px;display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success view -->
+  <div class="up-body success-view" id="successView">
+    <div class="success-icon">⚡</div>
+    <div class="success-title">You're now Pro! 🎉</div>
+    <p style="font-size:12px;color:var(--rs-text-dim);text-align:center;max-width:280px">
+      Reddit Scout Pro is now active. Unlimited scans, CSV export, and all Pro features unlocked.
+    </p>
+    <div style="width:100%">
+      <div style="font-size:10px;color:var(--rs-text-dim);margin-bottom:4px">Your License Key (save this):</div>
+      <div class="license-display" id="successLicenseKey"></div>
+    </div>
+    <button class="rs-btn rs-btn-primary" id="closeSuccessBtn" style="width:100%;justify-content:center;padding:12px">
+      Start Scouting →
+    </button>
+  </div>
+
+  <script src="upgrade.js"></script>
+</body>
+</html>
